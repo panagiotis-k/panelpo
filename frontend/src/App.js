@@ -1,32 +1,23 @@
-import './App.css';
-import data from './data';
+import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+
+import HomePage from "./pages/HomePage";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
   return (
-    <div className="App">
-      <header><a href="/">Panelpo</a></header>
-      <main>
-        <h1>Main Products</h1>
-        <div className="products">
-          {data.products.map(product=>{
-              return (
-                <div className='product' key={product.sku}>
-                    <a href={`/product/${product.sku}`}>
-                      <img src={product.image} alt={product.name}></img>
-                    </a>
-                    
-                    <div className="product-info">
-                      <a href={`/product/${product.sku}`}>
-                        <p>{product.name}</p>
-                      </a>
-                      <strong>&euro; {product.price}</strong>
-                    </div>
-                </div>
-              );
-          })}
-        </div>
-      </main>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <header>
+          <Link to="/">Panelpo</Link>
+        </header>
+        <main>
+          <Routes>
+            <Route path="/product/:sku" element={<ProductPage />} />
+            <Route path="/" element={<HomePage />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
 
