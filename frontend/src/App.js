@@ -1,23 +1,37 @@
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { LinkContainer } from 'react-router-bootstrap';
 
-import HomePage from "./pages/HomePage";
-import ProductPage from "./pages/ProductPage";
+import HomePage from './pages/HomePage';
+import ProductPage from './pages/ProductPage';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="App">
+    <div className="d-flex flex-column site-container">
+      <BrowserRouter>
         <header>
-          <Link to="/">Panelpo</Link>
+          <Navbar bg="dark" variant="dark">
+            <Container>
+              <LinkContainer to="/">
+                <Navbar.Brand>panelpo</Navbar.Brand>
+              </LinkContainer>
+            </Container>
+          </Navbar>
         </header>
         <main>
-          <Routes>
-            <Route path="/product/:sku" element={<ProductPage />} />
-            <Route path="/" element={<HomePage />} />
-          </Routes>
+          <Container>
+            <Routes>
+              <Route path="/product/:sku" element={<ProductPage />} />
+              <Route path="/" element={<HomePage />} />
+            </Routes>
+          </Container>
         </main>
-      </div>
-    </BrowserRouter>
+        <footer>
+          <p className="text-center">&copy; Created by PK</p>
+        </footer>
+      </BrowserRouter>
+    </div>
   );
 }
 

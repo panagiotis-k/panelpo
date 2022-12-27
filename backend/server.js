@@ -1,9 +1,10 @@
-import express from "express";
-import data from "./data.js";
+import express from 'express';
+import data from './data.js';
 
 const app = express();
 
-app.get("/api/products/", (req, res) => {
+app.get('/api/products/', (req, res) => {
+  console.log('RQ CAME');
   res.send(data.products);
 });
 

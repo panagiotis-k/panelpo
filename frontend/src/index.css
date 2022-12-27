@@ -1,21 +1,14 @@
 body {
   margin: 0;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-header {
-  background-color: #404040;
-  padding: 1rem;
-}
-
-header a {
-  text-decoration: none;
-  font-weight: bold;
-  color: #fff;
+.site-container {
+  min-height: 100vh;
 }
 
 main {
-  padding: 1rem;
+  flex: 1;
 }
 
 .products {
@@ -32,7 +25,7 @@ main {
 .product img {
   width: 100%;
   max-width: 400px;
-  height: 400px;
+  height: 350px;
 }
 
 .product-info {
