@@ -1,14 +1,18 @@
 import axios from 'axios';
-import React, { useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '../components/Rating';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import { Helmet } from 'react-helmet-async';
+import LoadingSpinner from '../components/LoadingSpinner';
+import AlertMessage from '../components/AlertMessage';
+import { getError } from '../error';
+import { Store } from '../Store';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -25,6 +29,7 @@ const reducer = (state, action) => {
 
 export default function ProductPage() {
   const params = useParams();
+  const navigate = useNavigate();
   const { sku } = params;
 
   const [state, dispatch] = useReducer(reducer, {
@@ -41,7 +46,7 @@ export default function ProductPage() {
         const result = await axios.get(`/api/product/sku/${sku}`);
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
       } catch (e) {
-        dispatch({ type: 'FETCH_FAIL', payload: e.message });
+        dispatch({ type: 'FETCH_FAIL', payload: getError(e) });
       }
 
       // setProducts(result.data);
@@ -49,10 +54,33 @@ export default function ProductPage() {
     fetchData();
   }, [sku]);
 
+  const { state: ctxState, dispatch: ctxDispatch } = useContext(Store);
+  const { cart } = ctxState;
+
+  const add2cart = async () => {
+    console.log('add2cart from product page');
+    const existedItem = cart.cartItems.find((prod) => {
+      return prod.sku === state.product.sku;
+    });
+
+    const quantity = existedItem ? existedItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/product/sku/${state.product.sku}`);
+    if (data.countInStock < quantity) {
+      window.alert('Product out of stock!');
+      return;
+    }
+    ctxDispatch({
+      type: 'ADD_TO_CART',
+      payload: { ...state.product, quantity },
+    });
+
+    navigate('/cart');
+  };
+
   return state.loading ? (
-    <div>Loading...</div>
+    <LoadingSpinner />
   ) : state.error ? (
-    <div>{state.error}</div>
+    <AlertMessage variant="danger">{state.error}</AlertMessage>
   ) : (
     <div>
       <Row>
@@ -112,7 +140,9 @@ export default function ProductPage() {
                 {state.product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary">Add to cart</Button>
+                      <Button onClick={add2cart} variant="primary">
+                        Add to cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}

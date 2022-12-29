@@ -4,6 +4,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Product from '../components/Product';
 import { Helmet } from 'react-helmet-async';
+import LoadingSpinner from '../components/LoadingSpinner';
+import AlertMessage from '../components/AlertMessage';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -52,9 +54,9 @@ function HomePage() {
       <h1>Main Products</h1>
       <div className="products">
         {state.loading ? (
-          <div>Loading...</div>
+          <LoadingSpinner />
         ) : state.error ? (
-          <div>{state.error}</div>
+          <AlertMessage variant="danger">{state.error}</AlertMessage>
         ) : (
           <Row>
             {state.products.map((product) => {

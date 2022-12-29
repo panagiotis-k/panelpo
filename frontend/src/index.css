@@ -44,3 +44,15 @@ main {
 .img-large {
   max-width: 100%;
 }
+
+#bubble-mc {
+  margin-left: 5px;
+}
+
+.img-thumbnail {
+  height: 80px;
+}
+
+.small-container {
+  width: 600px;
+}
