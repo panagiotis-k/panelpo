@@ -16,7 +16,8 @@ import Badge from 'react-bootstrap/Badge';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import ShippingAddressPage from './pages/ShippingAddressPage.js';
-import SignUpPage from './pages/SignUpPage';
+import SignUpPage from './pages/SignUpPage.js';
+import PaymentPage from './pages/PaymentPage.js';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -26,6 +27,7 @@ function App() {
     ctxDispatch({ type: 'USER_LOGOUT' });
     localStorage.removeItem('userInfo');
     localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
   };
 
   return (
@@ -84,6 +86,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/shipping" element={<ShippingAddressPage />} />
               <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/payment" element={<PaymentPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>

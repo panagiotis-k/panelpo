@@ -29,6 +29,7 @@ export default function ShippingAddressPage() {
   const [country, setCountry] = useState(shippingAddress.country || '');
 
   const submitHandler = (e) => {
+    console.log('SUBMIT!!!!');
     e.preventDefault();
     ctxDispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
