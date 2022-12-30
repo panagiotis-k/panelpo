@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "backend": "file:backend",
+    "cd": "^0.3.3"
+  }
+}
