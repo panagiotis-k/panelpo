@@ -43,7 +43,7 @@ export default function ProductPage() {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_RQ' });
       try {
-        const result = await axios.get(`/api/product/sku/${sku}`);
+        const result = await axios.get(`/api/products/sku/${sku}`);
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
       } catch (e) {
         dispatch({ type: 'FETCH_FAIL', payload: getError(e) });
@@ -60,11 +60,11 @@ export default function ProductPage() {
   const add2cart = async () => {
     console.log('add2cart from product page');
     const existedItem = cart.cartItems.find((prod) => {
-      return prod.sku === state.product.sku;
+      return prod._id === state.product._id;
     });
 
     const quantity = existedItem ? existedItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/product/sku/${state.product.sku}`);
+    const { data } = await axios.get(`/api/products/${state.product._id}`);
     if (data.countInStock < quantity) {
       window.alert('Product out of stock!');
       return;
