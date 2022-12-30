@@ -47,10 +47,13 @@ function App() {
                     </Badge>
                   )}
                 </Link>
+
                 {userInfo ? (
                   <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
                     <LinkContainer to="/profile">
-                      <NavDropdown.Item>User Profile</NavDropdown.Item>
+                      <NavDropdown.Item>
+                        <i class="fas fa-user"></i> User Profile
+                      </NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to="/orderhistory">
                       <NavDropdown.Item>Order History</NavDropdown.Item>
