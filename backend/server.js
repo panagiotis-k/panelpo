@@ -1,24 +1,25 @@
 import express from 'express';
 import data from './data.js';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import seedRouter from './routes/seedsRoutes.js';
+import productRouter from './routes/productRoutes.js';
 
-const app = express();
+dotenv.config();
+mongoose.set('strictQuery', true);
 
-app.get('/api/products/', (req, res) => {
-  console.log('RQ CAME');
-  res.send(data.products);
-});
-
-app.get('/api/product/sku/:sku', (req, res) => {
-  const product = data.products.find((product) => {
-    return product.sku == req.params.sku;
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('connected to  db');
+  })
+  .catch((e) => {
+    console.log(e.message);
   });
 
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
+const app = express();
+app.use('/api/seed', seedRouter);
+app.use('/api/products', productRouter);
 
 const port = process.env.PORT || 5000;
 
