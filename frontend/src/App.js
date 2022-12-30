@@ -15,6 +15,7 @@ import { Store } from './Store';
 import Badge from 'react-bootstrap/Badge';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
+import ShippingAddressPage from './pages/ShippingAddressPage.js';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -23,6 +24,7 @@ function App() {
   const signoutHandler = () => {
     ctxDispatch({ type: 'USER_LOGOUT' });
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
   };
 
   return (
@@ -58,7 +60,7 @@ function App() {
                       to="#signout"
                       onClick={signoutHandler}
                     >
-                      Sign out
+                      Log out
                     </Link>
                   </NavDropdown>
                 ) : (
@@ -76,6 +78,7 @@ function App() {
               <Route path="/product/:sku" element={<ProductPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/shipping" element={<ShippingAddressPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
