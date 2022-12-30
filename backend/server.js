@@ -1,9 +1,9 @@
 import express from 'express';
-import data from './data.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import seedRouter from './routes/seedsRoutes.js';
 import productRouter from './routes/productRoutes.js';
+import userRouter from './routes/userRoutes.js';
 
 dotenv.config();
 mongoose.set('strictQuery', true);
@@ -18,8 +18,24 @@ mongoose
   });
 
 const app = express();
+
+//Convert form data to JSON
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+//Route for seeding the db with sample products
 app.use('/api/seed', seedRouter);
+
+//Route for product requests
 app.use('/api/products', productRouter);
+
+//Route for users
+app.use('/api/users', userRouter);
+
+//Error Handler
+app.use((err, req, res, next) => {
+  res.status(500).send({ message: err.message });
+});
 
 const port = process.env.PORT || 5000;
 
