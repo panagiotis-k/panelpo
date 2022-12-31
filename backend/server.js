@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import seedRouter from './routes/seedsRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
 
 dotenv.config();
 mongoose.set('strictQuery', true);
@@ -31,6 +32,9 @@ app.use('/api/products', productRouter);
 
 //Route for users
 app.use('/api/users', userRouter);
+
+//Route for orders
+app.use('/api/orders', orderRouter);
 
 //Error Handler
 app.use((err, req, res, next) => {
