@@ -23,6 +23,7 @@ export default function SignUpPage() {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
+
   const submitForm = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {

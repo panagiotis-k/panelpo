@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps.js';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,11 +8,33 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import { Store } from '../Store';
+import { toast } from 'react-toastify';
+import { getError } from '../error.js';
+import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner.js';
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'CREATE_REQUEST':
+      return { ...state, loading: true };
+    case 'CREATE_SUCCESS':
+      return { ...state, loading: false };
+    case 'CREATE_FAIL':
+      return { ...state, loading: false };
+    default:
+      return state;
+  }
+};
 
 export default function PlaceOrderPage() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const navigate = useNavigate();
+
+  const [{ loading, error }, dispatch] = useReducer(reducer, {
+    loading: false,
+    error: '',
+  });
 
   const round2 = (num) => {
     return Math.round(num * 100 + Number.EPSILON) / 100;
@@ -25,10 +47,34 @@ export default function PlaceOrderPage() {
   );
 
   cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
-  cart.taxtPrice = round2(0.15 * cart.itemsPrice);
-  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxtPrice;
+  cart.taxPrice = round2(0.15 * cart.itemsPrice);
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 
-  const placeOrder = async () => {};
+  const placeOrder = async () => {
+    try {
+      dispatch({ type: 'CREATE_REQUEST' });
+
+      const orderPayload = {
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      };
+
+      var config = { headers: { authoriazation: `Bearer ${userInfo.token}` } };
+      const { data } = await axios.post('/api/orders', orderPayload, config);
+      ctxDispatch({ type: 'CART_CLEAR' });
+      dispatch({ type: 'CREATE_SUCCESS' });
+      localStorage.removeItem('cartItems');
+      navigate(`/order/${data.order._id}`);
+    } catch (err) {
+      dispatch({ type: 'CREATE_FAIL' });
+      toast.error(getError(err));
+    }
+  };
 
   useEffect(() => {
     if (!cart.paymentMethod) {
@@ -113,7 +159,7 @@ export default function PlaceOrderPage() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Tax</Col>
-                    <Col>&euro; {cart.taxtPrice.toFixed(2)}</Col>
+                    <Col>&euro; {cart.taxPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -136,6 +182,7 @@ export default function PlaceOrderPage() {
                       Place Order
                     </Button>
                   </div>
+                  {loading && <LoadingSpinner></LoadingSpinner>}
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
