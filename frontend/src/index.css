@@ -125,3 +125,7 @@ main {
 button.thumbnail {
   padding: 0;
 }
+
+.order-success-id span {
+  color: #ffc000;
+}
